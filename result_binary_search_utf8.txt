@@ -1,0 +1,22 @@
+﻿graph TD
+  node_527928["Start: binary_search()"]
+  style node_527928 fill:#cba6f7,stroke:#1e1e2e,color:#1e1e2e
+  node_527928_step_0["Γ£Å∩╕Å Initialize Variables"]
+  node_527928 ----> node_527928_step_0
+  node_527928_step_1{{"≡ƒöü Iterate / Loop"}}
+  node_527928_step_0 ----> node_527928_step_1
+  node_527928_step_2["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_527928_step_1 --|Loop| --> node_527928_step_2
+  node_527928_step_3{{"≡ƒöÇ Conditional Logic"}}
+  node_527928_step_2 ----> node_527928_step_3
+  node_527928_step_4(["≡ƒÅü Return Result"])
+  node_527928_step_3 --|True| --> node_527928_step_4
+  node_527928_step_5["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_527928_step_3 --|False| --> node_527928_step_5
+  node_527928_step_6((" "))
+  node_527928_step_4 --> node_527928_step_6
+  node_527928_step_5 --> node_527928_step_6
+  node_527928_step_6 --> node_527928_step_1
+  node_527928_step_7(["≡ƒÅü Return Result"])
+  node_527928_step_1 ----> node_527928_step_7
+

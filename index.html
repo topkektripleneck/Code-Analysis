@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Code Analyzer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #toolbar {
+      background: #181825;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #313244;
+    }
+
+    #toolbar h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #cba6f7;
+    }
+
+    #lang-select {
+      background: #313244;
+      color: #cdd6f4;
+      border: 1px solid #45475a;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #analyze-btn {
+      background: #cba6f7;
+      color: #1e1e2e;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: auto;
+    }
+
+    #analyze-btn:hover {
+      background: #b4befe;
+    }
+
+    #main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .panel-label {
+      background: #181825;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: #6c7086;
+      border-bottom: 1px solid #313244;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #divider {
+      width: 4px;
+      background: #313244;
+      cursor: col-resize;
+    }
+
+    #code-input {
+      flex: 1;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border: none;
+      padding: 16px;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      line-height: 1.6;
+    }
+
+    #results-panel {
+      flex: 1;
+      background: #181825;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .placeholder {
+      color: #45475a;
+      font-size: 14px;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .mermaid-container {
+      margin-top: 16px;
+      padding: 16px;
+      background: #11111b;
+      border-radius: 6px;
+      border: 1px solid #313244;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    .trace-btn {
+      background: #89b4fa;
+      color: #1e1e2e;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 12px;
+    }
+
+    .trace-btn:hover {
+      background: #b4befe;
+    }
+
+    .trace-table-container {
+      margin-top: 16px;
+      background: #11111b;
+      border-radius: 6px;
+      border: 1px solid #313244;
+      overflow-x: auto;
+    }
+
+    .trace-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: 12px;
+    }
+
+    .trace-table th {
+      background: #181825;
+      color: #bac2de;
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #313244;
+    }
+
+    .trace-table td {
+      padding: 8px;
+      border-bottom: 1px solid #313244;
+      color: #a6adc8;
+    }
+
+    .line-col {
+      color: #cba6f7 !important;
+      font-weight: 600;
+      width: 60px;
+    }
+
+    .var-badge {
+      display: inline-block;
+      background: #313244;
+      color: #cdd6f4;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 6px;
+      margin-bottom: 4px;
+    }
+
+    .var-name {
+      color: #f38ba8;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="toolbar">
+    <h1>Code Analyzer</h1>
+    <select id="lang-select">
+      <option value="python">Python</option>
+      <option value="cpp">C++</option>
+    </select>
+    <button id="analyze-btn">Analyze</button>
+  </div>
+
+  <div id="main">
+    <div class="panel">
+      <div class="panel-label">Your Code</div>
+      <textarea id="code-input" placeholder="Paste your code here..."></textarea>
+    </div>
+
+    <div id="divider"></div>
+
+    <div class="panel">
+      <div class="panel-label">Analysis</div>
+      <div id="results-panel">
+        <p class="placeholder">Paste code on the left and click Analyze.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import mermaid from './node_modules/mermaid/dist/mermaid.esm.min.mjs';
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#cba6f7',
+        primaryTextColor: '#1e1e2e',
+        primaryBorderColor: '#1e1e2e',
+        lineColor: '#cdd6f4',
+        secondaryColor: '#f5c2e7',
+        tertiaryColor: '#181825'
+      }
+    });
+
+    window.mermaid = mermaid;
+  </script>
+
+  <script>
+    const { ipcRenderer } = require('electron')
+
+    // Store analyzed points globally to allow tracing them later
+    let currentPoints = [];
+
+    document.getElementById('analyze-btn').addEventListener('click', async () => {
+      const code = document.getElementById('code-input').value
+      const lang = document.getElementById('lang-select').value
+      const results = document.getElementById('results-panel')
+
+      if (!code.trim()) {
+        results.innerHTML = '<p class="placeholder">No code to analyze.</p>'
+        return
+      }
+
+      results.innerHTML = '<p class="placeholder">Analyzing...</p>'
+
+      try {
+        currentPoints = await ipcRenderer.invoke('analyze', { code, lang })
+      } catch (err) {
+        results.innerHTML = `<p style="color:#f38ba8; padding:16px;">Error: ${err.message}</p>`
+        return
+      }
+
+      if (currentPoints.length === 0) {
+        results.innerHTML = '<p class="placeholder">No functions, loops, or conditionals found.</p>'
+        return
+      }
+
+      renderPoints(results, currentPoints, lang === 'python');
+    })
+
+    function renderPoints(container, points, isPython) {
+      container.innerHTML = points.map((p, index) => {
+        let traceButtonHtml = "";
+        // Currently we only support dynamic tracing for Python Functions
+        if (isPython && p.kind === 'Function') {
+          // Extract function name rudimentarily for the trace call
+          const funcMatch = p.source.match(/def\s+([a-zA-Z_0-9]+)\s*\((.*?)\):/);
+          if (funcMatch) {
+            const funcName = funcMatch[1];
+            traceButtonHtml = `
+                  <input type="text" id="trace-args-${index}" placeholder="Args (e.g. [1,2], 3)" style="background:#313244; color:#cdd6f4; border:1px solid #45475a; border-radius:4px; padding:4px 8px; font-size:12px; margin-left:12px; width:180px;" />
+                  <button class="trace-btn" onclick="runTrace('${funcName}', ${index}, ${p.startLine - 1})">Run Trace Table</button>
+                `;
+          }
+        }
+
+        return `
+            <div style="margin-bottom:24px; background:#1e1e2e; border-radius:8px; padding:16px; border-left: 3px solid #cba6f7;">
+              <div style="font-size:12px; color:#cba6f7; margin-bottom:8px; display:flex; align-items:center;">
+                ${p.kind} — Lines ${p.startLine}–${p.endLine}
+                ${traceButtonHtml}
+              </div>
+              <pre style="font-size:13px; color:#cdd6f4; white-space:pre-wrap;">${p.source}</pre>
+              <div class="mermaid-container">
+                <pre class="mermaid" id="mermaid-${index}">${p.mermaid}</pre>
+              </div>
+              <div id="trace-container-${index}"></div>
+            </div>
+          `;
+      }).join('');
+
+      setTimeout(async () => {
+        if (window.mermaid) {
+          try {
+            await window.mermaid.run({ querySelector: '.mermaid' });
+          } catch (e) {
+            console.error('Mermaid rendering error:', e);
+          }
+        }
+      }, 50);
+    }
+
+    window.runTrace = async function (funcName, index, lineOffset) {
+      const code = document.getElementById('code-input').value;
+      const traceContainer = document.getElementById(`trace-container-${index}`);
+      const inputElement = document.getElementById(`trace-args-${index}`);
+
+      const inputArgs = inputElement ? inputElement.value.trim() : "";
+      if (!inputArgs) {
+        traceContainer.innerHTML = '<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Please enter input arguments first.</p>';
+        return;
+      }
+
+      traceContainer.innerHTML = '<p style="color:#89b4fa; padding:12px 0; font-size:13px;">Executing trace...</p>';
+
+      // Append the function call to the raw code string so the tracer runs it
+      const codeToExecute = code + `\n\n${funcName}(${inputArgs})`;
+
+      try {
+        const traceData = await ipcRenderer.invoke('trace', { code: codeToExecute, offset: lineOffset });
+
+        if (!traceData || traceData.length === 0) {
+          traceContainer.innerHTML = '<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Trace returned no data.</p>';
+          return;
+        }
+
+        // Build HTML Table
+        let tableHtml = `
+              <div class="trace-table-container">
+                <table class="trace-table">
+                  <thead>
+                    <tr>
+                      <th class="line-col">Line</th>
+                      <th>Variable States</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+            `;
+
+        traceData.forEach(step => {
+          let varsHtml = "";
+          for (const [key, val] of Object.entries(step.variables)) {
+            // Escape HTML to prevent injection if values contain tags
+            const safeVal = val.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            varsHtml += `<span class="var-badge"><span class="var-name">${key}</span>: ${safeVal}</span>`;
+          }
+
+          let lineClass = "";
+          if (step.line === "ERROR") lineClass = "style='color:#f38ba8;'";
+          if (step.line === "END") lineClass = "style='color:#a6e3a1;'";
+
+          tableHtml += `
+                 <tr>
+                    <td class="line-col" ${lineClass}>${step.line}</td>
+                    <td>${varsHtml || '<i>No locals tracked</i>'}</td>
+                 </tr>
+               `;
+        });
+
+        tableHtml += `</tbody></table></div>`;
+        traceContainer.innerHTML = tableHtml;
+
+      } catch (err) {
+        traceContainer.innerHTML = `<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Trace Error: ${err.message}</p>`;
+      }
+    };
+  </script>
+</body>
+
+</html>

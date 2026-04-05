@@ -1,0 +1,60 @@
+﻿
+
+--- Graph 0 (Function) ---
+graph TD
+  node_545944["merge_sort()"]
+  style node_545944 fill:#cba6f7,stroke:#1e1e2e,color:#1e1e2e
+
+
+
+--- Graph 1 (If Statement) ---
+graph TD
+  node_545632{"if len(arr) &gt; 1"}
+  node_545632_true["True Block"]
+  node_545632_false["False Block / End"]
+  node_545632 -->|True| node_545632_true
+  node_545632 -->|False| node_545632_false
+
+
+
+--- Graph 2 (While Loop) ---
+graph TD
+  node_540664{"while i &lt; len(left_half) and j &lt; len(right_half)"}
+  node_540664_body["Loop Body"]
+  node_540664_end["End Loop"]
+  node_540664 -->|True| node_540664_body
+  node_540664_body --> node_540664
+  node_540664 -->|False| node_540664_end
+
+
+
+--- Graph 3 (If Statement) ---
+graph TD
+  node_535856{"if left_half[i] &lt; right_half[j]"}
+  node_535856_true["True Block"]
+  node_535856_false["False Block / End"]
+  node_535856 -->|True| node_535856_true
+  node_535856 -->|False| node_535856_false
+
+
+
+--- Graph 4 (While Loop) ---
+graph TD
+  node_540672{"while i &lt; len(left_half)"}
+  node_540672_body["Loop Body"]
+  node_540672_end["End Loop"]
+  node_540672 -->|True| node_540672_body
+  node_540672_body --> node_540672
+  node_540672 -->|False| node_540672_end
+
+
+
+--- Graph 5 (While Loop) ---
+graph TD
+  node_545248{"while j &lt; len(right_half)"}
+  node_545248_body["Loop Body"]
+  node_545248_end["End Loop"]
+  node_545248 -->|True| node_545248_body
+  node_545248_body --> node_545248
+  node_545248 -->|False| node_545248_end
+

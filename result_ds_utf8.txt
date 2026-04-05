@@ -1,0 +1,65 @@
+﻿
+
+--- Graph 0 (Function) ---
+graph TD
+  node_530712["analyze_data()"]
+  style node_530712 fill:#cba6f7,stroke:#1e1e2e,color:#1e1e2e
+
+
+
+--- Graph 1 (List) ---
+graph TD
+  node_516384["List Definition"]
+  node_516384_0["[0] 1"]
+  node_516384 --- node_516384_0
+  node_516384_1["[1] 2"]
+  node_516384 --- node_516384_1
+  node_516384_2["[2] 'three'"]
+  node_516384 --- node_516384_2
+  node_516384_3["[3] 4.0"]
+  node_516384 --- node_516384_3
+
+
+
+--- Graph 2 (Dictionary) ---
+graph TD
+  node_519520["Dictionary Definition"]
+  node_519520_0["'name': 'Bot'"]
+  node_519520 --- node_519520_0
+  node_519520_1["'age': 1"]
+  node_519520 --- node_519520_1
+
+
+
+--- Graph 3 (Set) ---
+graph TD
+  node_521352["Set Definition"]
+  node_521352_0["[0] 1"]
+  node_521352 --- node_521352_0
+  node_521352_1["[1] 2"]
+  node_521352 --- node_521352_1
+  node_521352_2["[2] 3"]
+  node_521352 --- node_521352_2
+
+
+
+--- Graph 4 (Tuple) ---
+graph TD
+  node_524648["Tuple Definition"]
+  node_524648_0["[0] 'a'"]
+  node_524648 --- node_524648_0
+  node_524648_1["[1] 'b'"]
+  node_524648 --- node_524648_1
+  node_524648_2["[2] 'c'"]
+  node_524648 --- node_524648_2
+
+
+
+--- Graph 5 (If Statement) ---
+graph TD
+  node_530312{"if len(my_list) &gt; 0"}
+  node_530312_true["True Block"]
+  node_530312_false["False Block / End"]
+  node_530312 -->|True| node_530312_true
+  node_530312 -->|False| node_530312_false
+

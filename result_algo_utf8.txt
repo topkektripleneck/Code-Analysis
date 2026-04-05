@@ -1,0 +1,55 @@
+﻿graph TD
+  node_545944["Start: merge_sort()"]
+  style node_545944 fill:#cba6f7,stroke:#1e1e2e,color:#1e1e2e
+  node_545944_step_0{{"≡ƒöÇ Check Base Case"}}
+  node_545944 ----> node_545944_step_0
+  node_545944_step_1["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_545944_step_0 --|True| --> node_545944_step_1
+  node_545944_step_2["≡ƒöä Recursive Call"]
+  node_545944_step_1 ----> node_545944_step_2
+  node_545944_step_3["≡ƒöä Recursive Call"]
+  node_545944_step_2 ----> node_545944_step_3
+  node_545944_step_4["Γ£Å∩╕Å Initialize Variables"]
+  node_545944_step_3 ----> node_545944_step_4
+  node_545944_step_5{{"≡ƒöü Iterate / Loop"}}
+  node_545944_step_4 ----> node_545944_step_5
+  node_545944_step_6{{"≡ƒöÇ Conditional Logic"}}
+  node_545944_step_5 --|Loop| --> node_545944_step_6
+  node_545944_step_7["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_545944_step_6 --|True| --> node_545944_step_7
+  node_545944_step_8["Process Step"]
+  node_545944_step_7 ----> node_545944_step_8
+  node_545944_step_9["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_545944_step_6 --|False| --> node_545944_step_9
+  node_545944_step_10["Process Step"]
+  node_545944_step_9 ----> node_545944_step_10
+  node_545944_step_11((" "))
+  node_545944_step_8 --> node_545944_step_11
+  node_545944_step_10 --> node_545944_step_11
+  node_545944_step_12["Process Step"]
+  node_545944_step_11 ----> node_545944_step_12
+  node_545944_step_12 --> node_545944_step_5
+  node_545944_step_13{{"≡ƒöü Iterate / Loop"}}
+  node_545944_step_5 ----> node_545944_step_13
+  node_545944_step_14["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_545944_step_13 --|Loop| --> node_545944_step_14
+  node_545944_step_15["Process Step"]
+  node_545944_step_14 ----> node_545944_step_15
+  node_545944_step_16["Process Step"]
+  node_545944_step_15 ----> node_545944_step_16
+  node_545944_step_16 --> node_545944_step_13
+  node_545944_step_17{{"≡ƒöü Iterate / Loop"}}
+  node_545944_step_13 ----> node_545944_step_17
+  node_545944_step_18["Γ£Å∩╕Å Setup Pointers / Boundaries"]
+  node_545944_step_17 --|Loop| --> node_545944_step_18
+  node_545944_step_19["Process Step"]
+  node_545944_step_18 ----> node_545944_step_19
+  node_545944_step_20["Process Step"]
+  node_545944_step_19 ----> node_545944_step_20
+  node_545944_step_20 --> node_545944_step_17
+  node_545944_step_21((" "))
+  node_545944_step_0 --|False|--> node_545944_step_21
+  node_545944_step_22((" "))
+  node_545944_step_17 --> node_545944_step_22
+  node_545944_step_21 --> node_545944_step_22
+
