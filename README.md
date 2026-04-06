@@ -100,6 +100,8 @@ void bubbleSort(int arr[], int n) {
         }
     }
 }
+```
+
 ### Example 4: Boundary Crash (Python)
 
 This example is intentionally buggy to demonstrate the **Crash Error Trapping** modal. It tries to access an invalid list index inside a loop.
