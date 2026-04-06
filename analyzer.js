@@ -243,7 +243,7 @@ tracer.run_trace(code, ${offset})
     const wrapperFile = path.join(__dirname, `temp_wrapper_${Date.now()}.py`);
     fs.writeFileSync(wrapperFile, pythonScript, 'utf8');
 
-    const pythonProcess = spawn('python', [wrapperFile]);
+    const pythonProcess = spawn('py', [wrapperFile]);
 
     let stderrData = '';
 

@@ -3,8 +3,13 @@
 Code Analyzer is an Electron-based desktop application that visualizes the flow of your Python and C++ code. It parses the code using Tree-sitter, generates interactive flowchart diagrams using Mermaid, and even features a live execution tracer for Python code to step through local variable states line-by-line!
 
 ## Features
-- **Mermaid Block Diagrams**: Analyzes loops, conditionals, and logic within your code to generate clear Mermaid diagrams.
-- **Python Execution Tracer**: Supports live tracing of Python code. Enter the desired input arguments and it will generate a step-by-step table showing line completions and tracked variables.
+- **Mermaid Block Diagrams**: Analyzes loops, conditionals, and logic within your code to generate clear Mermaid diagrams, natively sorted in the *Static Analysis* tab.
+- **Interactive Step-by-Step Playback**: Supports live tracing of Python code. Enter desired input arguments and it generates an interactive timeline player! Scrub through the execution lifetime line-by-line using the slider to graphically follow loops and watch variable updates dynamically as deltas.
+- **Visual Code Highlighter**: Automatically highlights the active Python trace line directly over the source code block to help visualize logical traversal.
+- **Variable Jump Tracking**: Click on any trace variable to pull up a full history of its changes through the code. Click a timeline step to jump your player straight there.
+- **CSV Data Slicing**: Need to run massive datasets? Load argument sets dynamically via CSV and use the built-in slice modal to specify exact testing sub-grids.
+- **Crash Error Trapping**: Dynamically traps crashes during execution within a pop-up modal so you don't lose sight of the execution state just before the failure.
+- **Trace Exporting**: Easily dump trace playback variables and steps directly into a .csv using the "Export Trace" tool for metric inspection.
 - **Local Desktop App**: Fast and works entirely offline.
 
 ## How to Run
@@ -40,8 +45,9 @@ def fibonacci(n):
 **How to test tracing:**
 1. Paste the above code.
 2. Click **Analyze**.
-3. Under the generated diagram, look for the "Run Trace Table" input.
-4. Input `5` into the Args box and click "Run Trace Table". 
+3. Under the generated diagram, look for the "Run Trace Playback" input.
+4. Input `5` into the Args box and click "Run Trace Playback". 
+5. See the UI Tab jump to the Playback screen. Click Next/Prev explicitly or drag the slider to watch the variable parameters update sequentially and bounce around the code recursions!
 
 ### Example 2: Binary Search (Python)
 
@@ -72,7 +78,8 @@ def binary_search(arr, x):
     return -1
 ```
 **How to test tracing:**
-1. Put `[2, 3, 4, 10, 40], 10` in the Args box and run the trace table to see how `low`, `high` and `mid` change!
+1. Put `[2, 3, 4, 10, 40], 10` in the Args box and hit **Run Trace Playback**.
+2. Click the specific variables (like `mid`) in your locals window to pop-open the jump tracker, scrub through the steps and watch `low`, `high`, and `mid` dynamically narrow bounds step-by-step alongside the code highlighting!
 
 ### Example 3: C++ Loops and Logic (C++)
 
@@ -94,4 +101,4 @@ void bubbleSort(int arr[], int n) {
     }
 }
 ```
-*Note: Run Trace Table is currently only supported for Python, but the Mermaid Block diagram generation handles C++ seamlessly!*
+*Note: Run Trace Playback is currently only supported for Python, but the Mermaid Block diagram generation handles C++ seamlessly!*

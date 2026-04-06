@@ -191,6 +191,70 @@
     .var-name {
       color: #f38ba8;
     }
+
+    /* New Features CSS */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6); z-index: 1000;
+      display: none; align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #1e1e2e; padding: 24px; border-radius: 8px; border: 1px solid #313244;
+      width: 500px; max-width: 90%; color: #cdd6f4; max-height: 80vh; overflow-y: auto;
+    }
+    .modal-content h2 { margin-bottom: 12px; color: #cba6f7; font-size: 18px; }
+    .modal-content.error h2 { color: #f38ba8; }
+    
+    .btn { background: #cba6f7; color: #1e1e2e; border: none; border-radius: 4px; padding: 6px 14px; cursor: pointer; font-weight: 600; font-size: 13px; margin-top: 12px; margin-right: 8px; }
+    .btn:hover { background: #b4befe; }
+    .btn-secondary { background: #313244; color: #cdd6f4; }
+    .btn-secondary:hover { background: #45475a; }
+
+    .csv-btn { background: #a6e3a1; color: #1e1e2e; border: none; border-radius: 4px; padding: 4px 12px; font-size: 12px; font-weight: 600; cursor: pointer; margin-left: 6px; }
+    .csv-btn:hover { background: #94e2d5; }
+
+    .desc-btn { background: #f9e2af; color: #1e1e2e; border: none; border-radius: 4px; padding: 4px 12px; font-size: 12px; font-weight: 600; cursor: pointer; margin-left: 6px; }
+    .desc-btn:hover { background: #fae3b0; }
+
+    .var-badge { cursor: pointer; transition: background 0.2s; }
+    .var-badge:hover { background: #45475a; }
+    .var-badge.active-var { background: #cba6f7; color: #1e1e2e; }
+    .var-badge.active-var .var-name { color: #1e1e2e; font-weight: bold; }
+
+    .split-view { display: flex; gap: 16px; margin-top: 16px; align-items: flex-start; }
+    .trace-section { flex: 2; overflow-x: auto; background: #11111b; border-radius: 6px; border: 1px solid #313244; }
+    .tracker-section { flex: 1; background: #11111b; border-radius: 6px; border: 1px solid #313244; padding: 12px; height: auto; max-height: 400px; overflow-y: auto; display: none; }
+    
+    .tracker-item { padding: 6px; border-bottom: 1px solid #313244; cursor: pointer; font-family: 'Cascadia Code', monospace; font-size: 12px; }
+    .tracker-item:hover { background: #181825; }
+    
+    .highlight-flash { animation: flashrow 2.5s ease-out; }
+    @keyframes flashrow { 0% { background: rgba(203, 166, 247, 0.4); } 100% { background: transparent; } }
+
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 12px; margin-bottom: 4px; color: #bac2de; }
+    .form-group input { padding: 6px; background: #11111b; border: 1px solid #45475a; color: #cdd6f4; border-radius: 4px; width: 100%; box-sizing: border-box; }
+
+    /* Playback CSS */
+    .code-line { padding: 0 4px; border-radius: 2px; border-left: 2px solid transparent; transition: background 0.2s, border-color 0.2s; white-space: pre-wrap; font-family: 'Cascadia Code', 'Consolas', monospace; font-size: 13px; color: #cdd6f4; }
+    .code-line.active { background: rgba(203, 166, 247, 0.2); border-left: 2px solid #cba6f7; color: #cdd6f4; font-weight: bold; }
+
+    .playback-controls { display: flex; align-items: center; gap: 8px; background: #181825; padding: 12px; border-radius: 6px; border: 1px solid #313244; margin-bottom: 12px; }
+    .playback-controls input[type="range"] { flex: 1; margin: 0 12px; cursor: pointer; }
+    .playback-state { background: #11111b; border-radius: 6px; border: 1px solid #313244; padding: 12px; margin-bottom: 12px; }
+    .playback-state-header { font-size: 13px; color: #cba6f7; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #313244; padding-bottom: 8px; display: flex; justify-content: space-between; }
+    .playback-desc { color: #89b4fa; font-size: 14px; margin-bottom: 12px; }
+    .playback-locals { display: flex; flex-wrap: wrap; gap: 8px; }
+    .delta-badge { display: inline-block; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+    /* Tab UI CSS */
+    .tab-header { display: flex; border-bottom: 1px solid #313244; margin-bottom: 16px; margin-top: 12px; gap: 16px; }
+    .tab-btn { background: transparent; color: #a6adc8; border: none; padding: 8px 0; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; }
+    .tab-btn:hover { color: #cdd6f4; }
+    .tab-btn.active { color: #cba6f7; border-bottom: 2px solid #cba6f7; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
   </style>
 </head>
 
@@ -217,6 +281,60 @@
       <div class="panel-label">Analysis</div>
       <div id="results-panel">
         <p class="placeholder">Paste code on the left and click Analyze.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden Input for CSV -->
+  <input type="file" id="csv-file-input" accept=".csv" style="display:none;" />
+
+  <!-- CSV Slice Modal -->
+  <div id="csv-modal" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Select Data Subset</h2>
+      <p style="font-size: 13px; color: #a6adc8; margin-bottom: 16px;">Specify the rows and columns to extract from the CSV.</p>
+      <div class="form-group">
+        <label>Start Row (1-indexed)</label>
+        <input type="number" id="csv-start-row" value="1" min="1" />
+      </div>
+      <div class="form-group">
+        <label>End Row (Optional, leave blank for all)</label>
+        <input type="number" id="csv-end-row" placeholder="e.g. 10" />
+      </div>
+      <div class="form-group">
+        <label>Start Column (1-indexed)</label>
+        <input type="number" id="csv-start-col" value="1" min="1" />
+      </div>
+      <div class="form-group">
+        <label>End Column (Optional, leave blank for all)</label>
+        <input type="number" id="csv-end-col" placeholder="e.g. 5" />
+      </div>
+      <div style="display:flex; justify-content: flex-end; margin-top: 24px;">
+        <button class="btn btn-secondary" onclick="closeCsvModal()">Cancel</button>
+        <button class="btn" style="margin-right:0;" onclick="confirmCsvSlice()">Load Selection</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Handling Modal -->
+  <div id="desc-modal" class="modal-overlay">
+    <div class="modal-content" style="width: 600px;">
+      <h2>Execution Details (Data Handling)</h2>
+      <div id="desc-content" style="font-size: 14px; line-height: 1.6; color: #bac2de; margin-top: 12px;"></div>
+      <div style="display:flex; justify-content: flex-end; margin-top: 24px;">
+        <button class="btn btn-secondary" onclick="closeDescModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div id="error-modal" class="modal-overlay">
+    <div class="modal-content error" style="border-color: #f38ba8;">
+      <h2>Execution Error!</h2>
+      <p style="font-size: 13px; color: #a6adc8; margin-bottom: 12px;">The tracer encountered a crash during execution. Please review the variable states immediately preceding this error in the trace table.</p>
+      <div id="error-content" style="background:#11111b; padding: 12px; border-radius:4px; font-family:'Cascadia Code', monospace; color: #f38ba8; font-size: 12px; white-space:pre-wrap; overflow-x:auto;"></div>
+      <div style="display:flex; justify-content: flex-end; margin-top: 24px;">
+        <button class="btn btn-secondary" onclick="closeErrorModal()">Dismiss</button>
       </div>
     </div>
   </div>
@@ -276,6 +394,7 @@
     function renderPoints(container, points, isPython) {
       container.innerHTML = points.map((p, index) => {
         let traceButtonHtml = "";
+        
         // Currently we only support dynamic tracing for Python Functions
         if (isPython && p.kind === 'Function') {
           // Extract function name rudimentarily for the trace call
@@ -284,22 +403,43 @@
             const funcName = funcMatch[1];
             traceButtonHtml = `
                   <input type="text" id="trace-args-${index}" placeholder="Args (e.g. [1,2], 3)" style="background:#313244; color:#cdd6f4; border:1px solid #45475a; border-radius:4px; padding:4px 8px; font-size:12px; margin-left:12px; width:180px;" />
-                  <button class="trace-btn" onclick="runTrace('${funcName}', ${index}, ${p.startLine - 1})">Run Trace Table</button>
+                  <button class="trace-btn" onclick="runTrace('${funcName}', ${index}, ${p.startLine - 1})">Run Trace Playback</button>
+                  <button class="csv-btn" onclick="loadCsvFor('${funcName}', ${index}, ${p.startLine - 1})">Load CSV Args</button>
                 `;
           }
         }
 
+        const sourceLines = p.source.split('\n').map((l, i) => {
+           return `<div class="code-line" id="code-line-${index}-${p.startLine + i}">${l || ' '}</div>`;
+        }).join('');
+
         return `
             <div style="margin-bottom:24px; background:#1e1e2e; border-radius:8px; padding:16px; border-left: 3px solid #cba6f7;">
-              <div style="font-size:12px; color:#cba6f7; margin-bottom:8px; display:flex; align-items:center;">
-                ${p.kind} — Lines ${p.startLine}–${p.endLine}
-                ${traceButtonHtml}
+              <div style="font-size:12px; color:#cba6f7; display:flex; align-items:center; flex-wrap:wrap; gap:4px; justify-content:space-between;">
+                <span>${p.kind} — Lines ${p.startLine}–${p.endLine}</span>
+                <div>${traceButtonHtml}</div>
               </div>
-              <pre style="font-size:13px; color:#cdd6f4; white-space:pre-wrap;">${p.source}</pre>
-              <div class="mermaid-container">
-                <pre class="mermaid" id="mermaid-${index}">${p.mermaid}</pre>
+
+              <div class="tab-header">
+                <button class="tab-btn active" id="tab-btn-analysis-${index}" onclick="switchTab('analysis', ${index})">Static Analysis</button>
+                <button class="tab-btn" id="tab-btn-trace-${index}" onclick="switchTab('trace', ${index})">Trace Playback</button>
               </div>
-              <div id="trace-container-${index}"></div>
+
+              <div class="tab-content active" id="tab-content-analysis-${index}">
+                <div class="mermaid-container">
+                  <pre class="mermaid" id="mermaid-${index}">${p.mermaid}</pre>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-content-trace-${index}">
+                <div style="background:#11111b; padding:12px; border-radius:6px; border:1px solid #313244; margin-bottom:12px; overflow-x:auto;">
+                  ${sourceLines}
+                </div>
+                <div class="split-view" style="margin-top:0;">
+                  <div class="trace-section" id="trace-container-${index}" style="padding:12px; display:none;"></div>
+                  <div class="tracker-section" id="tracker-container-${index}"></div>
+                </div>
+              </div>
             </div>
           `;
       }).join('');
@@ -315,65 +455,262 @@
       }, 50);
     }
 
+    // --- Modal & Global State ---
+    let currentFuncToTrace = null;
+    let currentActiveTraceData = null;
+    let currentVariableHistory = null;
+    window.playbackInstances = {};
+
+    window.switchTab = (tabName, index) => {
+       document.querySelectorAll(`[id^="tab-btn-"][id$="-${index}"]`).forEach(el => el.classList.remove('active'));
+       document.querySelectorAll(`[id^="tab-content-"][id$="-${index}"]`).forEach(el => el.classList.remove('active'));
+       
+       const btn = document.getElementById(`tab-btn-${tabName}-${index}`);
+       const content = document.getElementById(`tab-content-${tabName}-${index}`);
+       if(btn) btn.classList.add('active');
+       if(content) content.classList.add('active');
+    };
+
+    window.closeCsvModal = () => document.getElementById('csv-modal').classList.remove('active');
+    window.closeErrorModal = () => document.getElementById('error-modal').classList.remove('active');
+
+    document.getElementById('csv-file-input').addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        document.getElementById('csv-modal').classList.add('active');
+      }
+    });
+
+    window.loadCsvFor = (funcName, index, startLine) => {
+      currentFuncToTrace = { funcName, index, startLine };
+      document.getElementById('csv-file-input').click();
+    };
+
+    window.confirmCsvSlice = async () => {
+      closeCsvModal();
+      const file = document.getElementById('csv-file-input').files[0];
+      if (!file || !currentFuncToTrace) return;
+      document.getElementById('csv-file-input').value = ""; // reset
+
+      const startRow = parseInt(document.getElementById('csv-start-row').value) || 1;
+      const endRow = parseInt(document.getElementById('csv-end-row').value) || Number.MAX_SAFE_INTEGER;
+      const startCol = parseInt(document.getElementById('csv-start-col').value) || 1;
+      const endCol = parseInt(document.getElementById('csv-end-col').value) || Number.MAX_SAFE_INTEGER;
+
+      const text = await file.text();
+      const lines = text.split(/\r?\n/).filter(x => x.trim().length > 0);
+      
+      let slice = lines.slice(startRow - 1, endRow).map(l => {
+        let parts = l.split(',');
+        return parts.slice(startCol - 1, endCol).map(p => {
+            const trimmed = p.trim();
+            if (!isNaN(trimmed)) return Number(trimmed);
+            return trimmed;
+        });
+      });
+      
+      const inputArgsText = JSON.stringify(slice);
+      const inputElement = document.getElementById(`trace-args-${currentFuncToTrace.index}`);
+      if (inputElement) inputElement.value = inputArgsText;
+
+      runTrace(currentFuncToTrace.funcName, currentFuncToTrace.index, currentFuncToTrace.startLine);
+    };
+
+    window.exportTraceCsv = () => {
+      if (!currentActiveTraceData) return;
+      let csv = "Step,Line,Variables\n";
+      currentActiveTraceData.forEach((step, idx) => {
+        let vars = [];
+        if(step.variables) {
+          for(let [k,v] of Object.entries(step.variables)) {
+            vars.push(`${k}=${v}`);
+          }
+        }
+        csv += `${idx},${step.line},"${vars.join(' | ').replace(/"/g, '""')}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "trace_export.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    };
+
+    window.focusVariable = (varName, index) => {
+      const tracker = document.getElementById(`tracker-container-${index}`);
+      tracker.style.display = 'block';
+      
+      if (!currentVariableHistory || !currentVariableHistory[varName]) return;
+      
+      let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom: 1px solid #313244; padding-bottom:8px;">
+         <strong style="color:#cba6f7;">History: ${varName}</strong>
+         <button class="btn-secondary" style="font-size:10px; padding:4px 8px; margin:0;" onclick="exportTraceCsv()">Export Trace</button>
+      </div>`;
+      
+      currentVariableHistory[varName].forEach(h => {
+         const safeVal = (h.value+"").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+         html += `<div class="tracker-item" onclick="jumpToStep(${index}, ${h.stepIndex})">
+           <span style="color:#a6adc8;">Line ${h.line}</span> \u2192 ${safeVal}
+         </div>`;
+      });
+      tracker.innerHTML = html;
+    };
+
+    window.jumpToStep = (traceIndex, stepIndex) => {
+      seekPlayback(traceIndex, stepIndex);
+    };
+
+    // --- Trace Logic ---
+    window.stepPlayback = (index, dir) => {
+       const pb = window.playbackInstances[index];
+       if (!pb) return;
+       let target = pb.currentStep + dir;
+       seekPlayback(index, target);
+    };
+
+    window.seekPlayback = (index, targetStep) => {
+       const pb = window.playbackInstances[index];
+       if (!pb) return;
+       
+       targetStep = Math.max(0, Math.min(pb.traceData.length - 1, parseInt(targetStep)));
+       pb.currentStep = targetStep;
+
+       const slider = document.getElementById(`playback-slider-${index}`);
+       if (slider) slider.value = targetStep;
+       
+       const counter = document.getElementById(`playback-counter-${index}`);
+       if (counter) counter.innerText = `Step ${targetStep + 1}/${pb.traceData.length}`;
+
+       const step = pb.traceData[targetStep];
+       const prevStep = targetStep > 0 ? pb.traceData[targetStep - 1] : { variables: {} };
+
+       // Check deltas
+       let deltasHtml = "";
+       let descText = `Executing Line ${step.line}. `;
+       for (const [k, v] of Object.entries(step.variables || {})) {
+          const prevV = (prevStep.variables || {})[k];
+          const safeVal = typeof v === 'string' ? v.replace(/</g, "&lt;").replace(/>/g, "&gt;") : String(v);
+          if (prevV !== v) {
+             deltasHtml += `<span class="delta-badge">${k} changed to ${safeVal}</span> `;
+             if (prevV === undefined) {
+                 descText += `Variable ${k} was defined as ${safeVal}. `;
+             } else {
+                 descText += `Variable ${k} updated from ${String(prevV)} to ${safeVal}. `;
+             }
+          }
+       }
+       
+       if (deltasHtml === "") {
+          descText += "No variable changes.";
+       }
+
+       if (step.line === "ERROR") {
+          descText = "Encountered runtime ERROR!";
+       } else if (step.line === "END") {
+          descText = "Function execution completed.";
+       }
+
+       let localsHtml = "";
+       for (const [k, v] of Object.entries(step.variables || {})) {
+           const safeVal = typeof v === 'string' ? v.replace(/</g, "&lt;").replace(/>/g, "&gt;") : String(v);
+           const isDelta = ((prevStep.variables || {})[k] !== v);
+           const cls = isDelta ? 'active-var' : '';
+           localsHtml += `<span class="var-badge ${cls}" onclick="focusVariable('${k}', ${index})"><span class="var-name">${k}</span>: ${safeVal}</span>`;
+       }
+
+       let stateHtml = `
+          <div class="playback-state-header">
+             <span>Line ${step.line}</span>
+             <div>${deltasHtml}</div>
+          </div>
+          <div class="playback-desc">${descText}</div>
+          <div class="playback-locals">${localsHtml || '<i style="color:#6c7086;font-size:12px;">No local variables</i>'}</div>
+       `;
+
+       const stContainer = document.getElementById(`playback-state-${index}`);
+       if (stContainer) stContainer.innerHTML = stateHtml;
+
+       // Highlight code block
+       document.querySelectorAll(`[id^="code-line-${index}-"]`).forEach(el => el.classList.remove('active'));
+       if (step.line !== "ERROR" && step.line !== "END") {
+           const lineEl = document.getElementById(`code-line-${index}-${step.line}`);
+           if (lineEl) {
+               lineEl.classList.add('active');
+               lineEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+           }
+       }
+    };
+
     window.runTrace = async function (funcName, index, lineOffset) {
+      switchTab('trace', index);
       const code = document.getElementById('code-input').value;
       const traceContainer = document.getElementById(`trace-container-${index}`);
       const inputElement = document.getElementById(`trace-args-${index}`);
 
       const inputArgs = inputElement ? inputElement.value.trim() : "";
       if (!inputArgs) {
+        traceContainer.style.display = 'block';
         traceContainer.innerHTML = '<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Please enter input arguments first.</p>';
         return;
       }
 
+      traceContainer.style.display = 'block';
       traceContainer.innerHTML = '<p style="color:#89b4fa; padding:12px 0; font-size:13px;">Executing trace...</p>';
+      
+      // Clear tracker
+      document.getElementById(`tracker-container-${index}`).style.display = 'none';
 
       // Append the function call to the raw code string so the tracer runs it
       const codeToExecute = code + `\n\n${funcName}(${inputArgs})`;
 
       try {
         const traceData = await ipcRenderer.invoke('trace', { code: codeToExecute, offset: lineOffset });
+        currentActiveTraceData = traceData;
 
         if (!traceData || traceData.length === 0) {
           traceContainer.innerHTML = '<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Trace returned no data.</p>';
           return;
         }
 
-        // Build HTML Table
-        let tableHtml = `
-              <div class="trace-table-container">
-                <table class="trace-table">
-                  <thead>
-                    <tr>
-                      <th class="line-col">Line</th>
-                      <th>Variable States</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-            `;
+        // Check for error payload to trigger modal instantly
+        const errorStep = traceData.find(s => s.line === "ERROR");
+        if (errorStep) {
+             document.getElementById('error-content').innerText = JSON.stringify(errorStep.variables, null, 2);
+             document.getElementById('error-modal').classList.add('active');
+        }
 
-        traceData.forEach(step => {
-          let varsHtml = "";
-          for (const [key, val] of Object.entries(step.variables)) {
-            // Escape HTML to prevent injection if values contain tags
-            const safeVal = val.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            varsHtml += `<span class="var-badge"><span class="var-name">${key}</span>: ${safeVal}</span>`;
+        // Process Variable History
+        const varHistory = {};
+        traceData.forEach((step, sIdx) => {
+          if (!step.variables || typeof step.variables !== 'object') return;
+          for (const [k, v] of Object.entries(step.variables)) {
+            if (!varHistory[k]) varHistory[k] = [];
+            const prev = varHistory[k].length > 0 ? varHistory[k][varHistory[k].length - 1].value : undefined;
+            if (prev !== v) {
+              varHistory[k].push({ stepIndex: sIdx, line: step.line, value: v });
+            }
           }
-
-          let lineClass = "";
-          if (step.line === "ERROR") lineClass = "style='color:#f38ba8;'";
-          if (step.line === "END") lineClass = "style='color:#a6e3a1;'";
-
-          tableHtml += `
-                 <tr>
-                    <td class="line-col" ${lineClass}>${step.line}</td>
-                    <td>${varsHtml || '<i>No locals tracked</i>'}</td>
-                 </tr>
-               `;
         });
+        currentVariableHistory = varHistory;
 
-        tableHtml += `</tbody></table></div>`;
-        traceContainer.innerHTML = tableHtml;
+        // Initialize playback
+        window.playbackInstances[index] = {
+            currentStep: 0,
+            traceData: traceData
+        };
+
+        const controlsHtml = `
+           <div class="playback-controls">
+              <button class="btn btn-secondary" style="margin:0;" onclick="stepPlayback(${index}, -1)">&larr; Prev</button>
+              <button class="btn" style="margin:0;" onclick="stepPlayback(${index}, 1)">Next &rarr;</button>
+              <input type="range" id="playback-slider-${index}" min="0" max="${traceData.length - 1}" value="0" oninput="seekPlayback(${index}, this.value)" />
+              <span style="font-size:12px; font-variant-numeric:tabular-nums; color:#a6adc8;" id="playback-counter-${index}">Step 1/${traceData.length}</span>
+           </div>
+           <div class="playback-state" id="playback-state-${index}">
+           </div>
+        `;
+        traceContainer.innerHTML = controlsHtml;
+        seekPlayback(index, 0);
 
       } catch (err) {
         traceContainer.innerHTML = `<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Trace Error: ${err.message}</p>`;
