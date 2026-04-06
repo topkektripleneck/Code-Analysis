@@ -100,5 +100,24 @@ void bubbleSort(int arr[], int n) {
         }
     }
 }
+### Example 4: Boundary Crash (Python)
+
+This example is intentionally buggy to demonstrate the **Crash Error Trapping** modal. It tries to access an invalid list index inside a loop.
+
+```python
+def find_threshold(data, limit):
+    total = 0
+    i = 0
+    while total < limit:
+        # BUG: The loop doesn't check if 'i' exceeds the list length!
+        total += data[i]
+        i += 1
+    return total
 ```
+**How to test tracing:**
+1. Put `[10, 20, 30], 100` in the Args box.
+2. Click **Run Trace Playback**.
+3. Watch the error modal pop up explicitly highlighting that an `IndexError` occurred at line 6. 
+4. When you dismiss it, you can scrub the timeline backwards. You'll clearly see `i` became `3` (an out-of-bounds index) right before the crash step!
+
 *Note: Run Trace Playback is currently only supported for Python, but the Mermaid Block diagram generation handles C++ seamlessly!*
