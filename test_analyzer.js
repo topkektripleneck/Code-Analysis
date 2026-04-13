@@ -23,7 +23,10 @@ async function test() {
     const points = analyzeCode(code);
     const funcNode = points.find(p => p.kind === 'Function');
     if (funcNode) {
+        console.log("--- MERMAID ---");
         console.log(funcNode.mermaid);
+        console.log("--- ESSAY PARAGRAPHS ---");
+        console.log(JSON.stringify(funcNode.essayParagraphs, null, 2));
     } else {
         console.log("No function node found.");
     }

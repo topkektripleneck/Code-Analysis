@@ -1,12 +1,11 @@
 import sys
 import json
-import ast
 
 def run_trace(code_str, start_line_offset=0):
     trace_data = []
     hidden_vars = {"__builtins__", "__name__", "__doc__", "__package__", "__loader__", "__spec__"}
     
-    def trace_lines(frame, event, arg):
+    def trace_lines(frame, event, _arg):
         if event != 'line':
             return trace_lines
         

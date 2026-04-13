@@ -214,9 +214,6 @@
     .csv-btn { background: #a6e3a1; color: #1e1e2e; border: none; border-radius: 4px; padding: 4px 12px; font-size: 12px; font-weight: 600; cursor: pointer; margin-left: 6px; }
     .csv-btn:hover { background: #94e2d5; }
 
-    .desc-btn { background: #f9e2af; color: #1e1e2e; border: none; border-radius: 4px; padding: 4px 12px; font-size: 12px; font-weight: 600; cursor: pointer; margin-left: 6px; }
-    .desc-btn:hover { background: #fae3b0; }
-
     .var-badge { cursor: pointer; transition: background 0.2s; }
     .var-badge:hover { background: #45475a; }
     .var-badge.active-var { background: #cba6f7; color: #1e1e2e; }
@@ -255,6 +252,13 @@
     .tab-btn.active { color: #cba6f7; border-bottom: 2px solid #cba6f7; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+
+    /* Essay View CSS */
+    .essay-view { padding: 16px 20px; max-width: 720px; }
+    .essay-para { margin-bottom: 14px; line-height: 1.65; color: #bac2de; font-size: 14px; transition: background 0.15s ease; border-left: 2px solid #89b4fa; padding-left: 12px; }
+    .essay-para:hover { background: rgba(46, 117, 182, 0.08); border-radius: 4px; cursor: pointer; }
+    .pattern-badge { display: inline-block; margin-left: 8px; padding: 1px 7px; background: rgba(46, 117, 182, 0.18); color: #89b4fa; border-radius: 3px; font-size: 11px; font-family: monospace; }
+    .complexity-badge { display: inline-block; margin-left: 6px; padding: 1px 7px; background: rgba(30, 107, 60, 0.18); color: #a6e3a1; border-radius: 3px; font-size: 11px; font-family: monospace; }
   </style>
 </head>
 
@@ -312,17 +316,6 @@
       <div style="display:flex; justify-content: flex-end; margin-top: 24px;">
         <button class="btn btn-secondary" onclick="closeCsvModal()">Cancel</button>
         <button class="btn" style="margin-right:0;" onclick="confirmCsvSlice()">Load Selection</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Data Handling Modal -->
-  <div id="desc-modal" class="modal-overlay">
-    <div class="modal-content" style="width: 600px;">
-      <h2>Execution Details (Data Handling)</h2>
-      <div id="desc-content" style="font-size: 14px; line-height: 1.6; color: #bac2de; margin-top: 12px;"></div>
-      <div style="display:flex; justify-content: flex-end; margin-top: 24px;">
-        <button class="btn btn-secondary" onclick="closeDescModal()">Close</button>
       </div>
     </div>
   </div>
@@ -422,12 +415,25 @@
 
               <div class="tab-header">
                 <button class="tab-btn active" id="tab-btn-analysis-${index}" onclick="switchTab('analysis', ${index})">Static Analysis</button>
+                <button class="tab-btn" id="tab-btn-essay-${index}" onclick="switchTab('essay', ${index})">Literate Narrative</button>
                 <button class="tab-btn" id="tab-btn-trace-${index}" onclick="switchTab('trace', ${index})">Trace Playback</button>
               </div>
 
               <div class="tab-content active" id="tab-content-analysis-${index}">
                 <div class="mermaid-container">
                   <pre class="mermaid" id="mermaid-${index}">${p.mermaid}</pre>
+                </div>
+              </div>
+
+              <div class="tab-content" id="tab-content-essay-${index}">
+                <div class="essay-view">
+                  ${p.essayParagraphs ? p.essayParagraphs.map(para => `
+                    <p class="essay-para" data-start="${para.sourceRange.startLine}" data-end="${para.sourceRange.endLine}" data-pattern="${para.patternLabel || ''}">
+                      ${para.text}
+                      ${para.patternLabel ? `<span class="pattern-badge">${para.patternLabel}</span>` : ''}
+                      ${para.complexity ? `<span class="complexity-badge">${para.complexity}</span>` : ''}
+                    </p>
+                  `).join('') : '<p class="placeholder" style="margin-top:0;">No narrative blocks found.</p>'}
                 </div>
               </div>
 

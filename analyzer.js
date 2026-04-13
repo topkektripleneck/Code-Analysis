@@ -1,4 +1,6 @@
 const path = require('path')
+const fs = require('fs')
+const { spawn } = require('child_process')
 const Parser = require('web-tree-sitter')
 
 let parser = null
@@ -20,6 +22,180 @@ async function initParser(langName) {
 
   const language = await Parser.Language.load(wasmPath)
   parser.setLanguage(language)
+}
+
+// --- LITERATE NARRATIVE ENGINE HELPER FUNCTIONS ---
+function formatParams(paramNode) {
+  if (!paramNode || paramNode.namedChildCount === 0) return "no arguments";
+  const params = [];
+  for (let i = 0; i < paramNode.namedChildCount; i++) {
+    params.push(`\`${paramNode.namedChild(i).text}\``);
+  }
+  return params.join(", ");
+}
+
+function formatArgs(argNode) {
+  if (!argNode || argNode.namedChildCount === 0) return "";
+  const args = [];
+  for (let i = 0; i < argNode.namedChildCount; i++) {
+    args.push(`\`${argNode.namedChild(i).text}\``);
+  }
+  return ` with arguments ${args.join(", ")}`;
+}
+
+function inferPurpose(name) {
+  if (!name) return "perform its operation";
+  const n = name.toLowerCase();
+  if (n.startsWith("get") || n.startsWith("fetch"))  return "retrieve a value";
+  if (n.startsWith("set") || n.startsWith("update")) return "modify state";
+  if (n.startsWith("is")  || n.startsWith("has"))    return "check a condition";
+  if (n.startsWith("calc")|| n.startsWith("compute"))return "perform a calculation";
+  if (n.startsWith("sort"))                          return "sort a collection";
+  if (n.startsWith("parse"))                         return "parse input";
+  return "perform its operation";
+}
+
+const templates = {
+  function_definition: (node) => {
+    const nameNode = node.childForFieldName('name')
+    const name = nameNode ? nameNode.text : 'anonymous'
+    const paramNode = node.childForFieldName('parameters')
+    return `The module defines the function \`${name}\`, which accepts ${formatParams(paramNode)} and is fundamentally responsible for ${inferPurpose(name)}.`
+  },
+  for_statement: (node) => {
+    const vNode = node.childForFieldName('left')
+    const iNode = node.childForFieldName('right')
+    const v = vNode ? vNode.text : 'element'
+    const i = iNode ? iNode.text : 'collection'
+    return `The routine utilizes a loop iterating over \`${i}\`, processing each \`${v}\`.` // DYNAMIC_HOOK: replace iterableName with actual runtime list
+  },
+  while_statement: (node) => {
+    const cNode = node.childForFieldName('condition')
+    const c = cNode ? cNode.text : 'condition'
+    return `The core logic relies on a while loop that iterates as long as \`${c}\`.`
+  },
+  if_statement: (node) => {
+    const cNode = node.childForFieldName('condition')
+    const c = cNode ? cNode.text : 'condition'
+    return `It evaluates conditional branches to handle specific cases, checking whether \`${c}\`.`
+  },
+  return_statement: (node) => {
+    const valNodes = node.children.slice(1)
+    const val = valNodes.length > 0 ? valNodes.map(n => n.text).join('') : 'nothing'
+    return `Ultimately, the function yields \`${val}\` as its final result.`
+  },
+  call: (node) => {
+    const fnNode = node.childForFieldName('function')
+    const aNode = node.childForFieldName('arguments')
+    const n = fnNode ? fnNode.text : 'function'
+    return `It delegates work by invoking \`${n}\`${formatArgs(aNode)}.`
+  },
+  import_statement: (node) => {
+    const mNodes = node.children.slice(1).filter(n => n.isNamed)
+    const ms = mNodes.map(n => n.text).join(', ')
+    return `This context relies heavily on external dependencies, specifically importing \`${ms}\`.`
+  },
+  class_definition: (node) => {
+    const nameNode = node.childForFieldName('name')
+    const name = nameNode ? nameNode.text : 'anonymous'
+    return `The component introduces a structural class, \`${name}\`, to encapsulate related state and behaviour.`
+  },
+  try_statement: (node) => {
+    const exceptNodes = node.children.filter(c => c.type === 'except_clause')
+    let errType = "error"
+    if (exceptNodes.length > 0) {
+       const errNode = exceptNodes[0].child(1)
+       if (errNode && errNode.isNamed) errType = errNode.text
+    }
+    return `Execution attempts a guarded block, catching and handling potential \`${errType}\` exceptions gracefully.`
+  },
+  _unknown: (node) => `[untranslated: ${node.type}]`
+}
+
+function generateEssayData(node, kind) {
+  // Only narrate top-level semantic boundaries. Child loops shouldn't generate redundant freestanding essays.
+  if (node.type !== 'function_definition' && node.type !== 'class_definition') return null;
+
+  function narrateSequence(blockNode, prefix = "") {
+      let bodyClauses = [];
+      let inits = [];
+      let returnClause = "";
+
+      for (let i = 0; i < blockNode.namedChildCount; i++) {
+          const stmt = blockNode.namedChild(i);
+          
+          if (stmt.type === 'expression_statement' && stmt.child(0) && stmt.child(0).type === 'assignment') {
+              const lhs = stmt.child(0).childForFieldName('left') || stmt.child(0).child(0);
+              if (lhs) inits.push(`\`${lhs.text}\``);
+          } else {
+              if (inits.length > 0) {
+                  bodyClauses.push(`${prefix ? prefix + ' starts' : 'It starts'} by establishing structural boundaries, initializing state for ${inits.join(', ')}.`);
+                  inits = [];
+              }
+
+              if (stmt.type === 'if_statement') {
+                  bodyClauses.push(templates.if_statement(stmt));
+                  const innerBlock = stmt.children.find(c => c.type === 'block');
+                  if (innerBlock) {
+                      const innerText = narrateSequence(innerBlock, "The branch");
+                      if (innerText) bodyClauses.push(`Within this branch, it proceeds as follows: ${innerText}`);
+                  }
+              }
+              else if (stmt.type === 'for_statement' || stmt.type === 'while_statement') {
+                  const t = stmt.type === 'for_statement' ? templates.for_statement(stmt) : templates.while_statement(stmt);
+                  bodyClauses.push(t);
+                  const innerBlock = stmt.children.find(c => c.type === 'block');
+                  if (innerBlock) {
+                      const innerText = narrateSequence(innerBlock, "The loop");
+                      if (innerText) bodyClauses.push(`During each iteration: ${innerText}`);
+                  }
+              }
+              else if (stmt.type === 'return_statement') {
+                   returnClause = templates.return_statement(stmt);
+              }
+              else if (stmt.type === 'expression_statement' && stmt.child(0) && stmt.child(0).type === 'call') {
+                  bodyClauses.push(templates.call(stmt.child(0)));
+              }
+          }
+      }
+      if (inits.length > 0) {
+          bodyClauses.push(`${prefix ? prefix + ' finishes' : 'It finishes'} execution sequence by updating ${inits.join(', ')}.`);
+      }
+
+      let res = bodyClauses.join(' ');
+      if (returnClause) res += (res ? ' ' : '') + returnClause;
+      return res.trim();
+  }
+
+  let paragraphs = [];
+  
+  if (node.type === 'function_definition') {
+    let pText = templates.function_definition(node);
+
+    const body = node.children.find(c => c.type === 'block');
+    if (body) {
+        const bodyContent = narrateSequence(body, "");
+        if (bodyContent) pText += " " + bodyContent;
+    }
+
+    paragraphs.push({
+        type: 'intro',
+        text: pText,
+        sourceRange: { startLine: node.startPosition.row + 1, endLine: node.endPosition.row + 1 },
+        patternLabel: null,
+        complexity: null
+    });
+  } else if (node.type === 'class_definition') {
+    paragraphs.push({
+        type: 'intro',
+        text: templates.class_definition(node),
+        sourceRange: { startLine: node.startPosition.row + 1, endLine: node.endPosition.row + 1 },
+        patternLabel: null,
+        complexity: null
+    });
+  }
+  
+  return paragraphs;
 }
 
 function generateMermaid(node, kind) {
@@ -209,12 +385,8 @@ function generateMermaid(node, kind) {
   return graph
 }
 
-const { spawn } = require('child_process');
-
 function executeTrace(code, offset = 0) {
   return new Promise((resolve, reject) => {
-    const fs = require('fs');
-    const path = require('path');
 
     // Write code to a temporary file
     const tempFile = path.join(__dirname, `temp_trace_${Date.now()}.py`);
@@ -311,13 +483,15 @@ function analyzeCode(code) {
         .join('\n')
 
       const mermaidGraph = generateMermaid(node, kind)
+      const essayParagraphs = generateEssayData(node, kind)
 
       points.push({
         kind: kind,
         startLine: node.startPosition.row + 1,
         endLine: node.endPosition.row + 1,
         source: chunk,
-        mermaid: mermaidGraph
+        mermaid: mermaidGraph,
+        essayParagraphs: essayParagraphs
       })
     }
 

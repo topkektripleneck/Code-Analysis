@@ -1,9 +1,10 @@
-# Code Analyzer
+# Code Analyzer & Literate Narrative Engine
 
-Code Analyzer is an Electron-based desktop application that visualizes the flow of your Python and C++ code. It parses the code using Tree-sitter, generates interactive flowchart diagrams using Mermaid, and even features a live execution tracer for Python code to step through local variable states line-by-line!
+Code Analyzer is an Electron-based desktop application that visualizes the flow of your Python and C++ code. It parses the code using Tree-sitter, generates interactive flowchart diagrams, translates structural logic into plain-English literate programming narratives, and even features a live execution tracer for Python code to step through local variable states line-by-line!
 
 ## Features
-- **Mermaid Block Diagrams**: Analyzes loops, conditionals, and logic within your code to generate clear Mermaid diagrams, natively sorted in the *Static Analysis* tab.
+- **Literate Narrative Engine**: Automatically translates the structural logic of your top-level functions and classes into flowing English prose, allowing you to read complex code flows like a story in the dedicated *Literate Narrative* tab.
+- **Mermaid Block Diagrams**: Analyzes loops, conditionals, and algorithms within your code to generate clear Mermaid diagrams natively sorted in the *Static Analysis* tab.
 - **Interactive Step-by-Step Playback**: Supports live tracing of Python code. Enter desired input arguments and it generates an interactive timeline player! Scrub through the execution lifetime line-by-line using the slider to graphically follow loops and watch variable updates dynamically as deltas.
 - **Visual Code Highlighter**: Automatically highlights the active Python trace line directly over the source code block to help visualize logical traversal.
 - **Variable Jump Tracking**: Click on any trace variable to pull up a full history of its changes through the code. Click a timeline step to jump your player straight there.
