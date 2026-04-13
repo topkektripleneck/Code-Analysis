@@ -25,6 +25,7 @@ Code Analyzer is an Electron-based desktop application that visualizes the flow 
    ```bash
    npm start
    ```
+<img width="1180" height="793" alt="image" src="https://github.com/user-attachments/assets/6634c842-adc6-41a3-a572-f1b4cd7bce56" />
 
 ## Examples to Test Out
 
@@ -78,6 +79,9 @@ def binary_search(arr, x):
     # If we reach here, then the element was not present
     return -1
 ```
+
+<img width="585" height="464" alt="image" src="https://github.com/user-attachments/assets/176bbff1-53d9-4ffa-aab6-decd9116c65a" />
+
 **How to test tracing:**
 1. Put `[2, 3, 4, 10, 40], 10` in the Args box and hit **Run Trace Playback**.
 2. Click the specific variables (like `mid`) in your locals window to pop-open the jump tracker, scrub through the steps and watch `low`, `high`, and `mid` dynamically narrow bounds step-by-step alongside the code highlighting!
