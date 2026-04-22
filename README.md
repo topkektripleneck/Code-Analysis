@@ -122,6 +122,22 @@ The **Macro View** will automatically draw a dependency link between your Python
 ### 3. DSA Pattern Detection
 The analyzer detects common patterns like `Linked List Node` structures or `Sliding Window` logic. It tags these in the fingerprint metadata, making it easy to identify the underlying data structures at a glance.
 
+## 💡 Examples & Use Cases
+
+### 1. Algorithm Visualization (Binary Search)
+Paste a standard Binary Search implementation in Python. The **Micro View** will generate a flowchart showing the `while` loop and boundary updates, while the **Literate Narrative** explains the "Divide and Conquer" logic in plain English. Use the **Trace Playback** to watch `low`, `high`, and `mid` change as you step through.
+
+### 2. Cross-Language Architecture
+If you have a Python script that orchestrates an R analysis:
+```python
+import subprocess
+subprocess.run(["Rscript", "analysis.R"])
+```
+The **Macro View** will automatically draw a dependency link between your Python environment and the R script, visually mapping your multi-language pipeline.
+
+### 3. DSA Pattern Detection
+The analyzer detects common patterns like `Linked List Node` structures or `Sliding Window` logic. It tags these in the fingerprint metadata, making it easy to identify the underlying data structures at a glance.
+
 ### 🧪 Test Snippets
 Copy and paste these into the analyzer to see the engine in action:
 
@@ -131,7 +147,11 @@ def fibonacci(n):
     if n <= 1:
         return n
     return fibonacci(n-1) + fibonacci(n-2)
+
+# Example Call:
+print(fibonacci(5))
 ```
+
 **Python (Merge Sort - Divide & Conquer)**
 ```python
 def merge_sort(arr):
@@ -155,8 +175,10 @@ def merge(left, right):
     result.extend(left[i:])
     result.extend(right[j:])
     return result
-```
 
+# Example Call:
+print(merge_sort([38, 27, 43, 3, 9, 82, 10]))
+```
 
 **R (Recursive Quicksort)**
 ```r
@@ -168,6 +190,9 @@ quicksort <- function(x) {
   right <- rest[rest >= pivot]
   return(c(quicksort(left), pivot, quicksort(right)))
 }
+
+# Example Call:
+print(quicksort(c(10, 5, 2, 3, 7, 6, 8, 9, 1, 4)))
 ```
 
 **C++ (BST Insertion - Pointer Manipulation)**
@@ -187,7 +212,17 @@ TreeNode* insertIntoBST(TreeNode* root, int val) {
     }
     return root;
 }
+
+// Example Usage:
+/*
+TreeNode* root = nullptr;
+root = insertIntoBST(root, 5);
+root = insertIntoBST(root, 3);
+root = insertIntoBST(root, 7);
+*/
 ```
+
+---
 ## 🗺️ Roadmap (Future Updates)
 
 - [ ] **Expanded Narratives**: Full hierarchical English synthesis for C++ and R (matching the current Python depth).
