@@ -131,7 +131,7 @@ def fibonacci(n):
     if n <= 1:
         return n
     return fibonacci(n-1) + fibonacci(n-2)
-
+```
 **Python (Merge Sort - Divide & Conquer)**
 ```python
 def merge_sort(arr):
@@ -156,7 +156,7 @@ def merge(left, right):
     result.extend(right[j:])
     return result
 ```
-```
+
 
 **R (Recursive Quicksort)**
 ```r
