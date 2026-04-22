@@ -5,6 +5,7 @@
 ![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
+<img width="880" height="583" alt="image" src="https://github.com/user-attachments/assets/c0b964bf-131a-42b9-9c02-82daa9b28393" />
 
 ## 🚀 New in v2.1 (The Polish Update)
 
@@ -15,9 +16,11 @@
 *   **Cross-Language Macro Linking**: The analyzer now detects and visualizes inter-process calls (e.g., Python calling an R script or a C++ binary).
 
 ## ✨ Core Features
+<img width="1284" height="832" alt="image" src="https://github.com/user-attachments/assets/00298e70-ca42-4124-8ba1-b81f70507371" />
 
 ### 📖 Literate Narrative Engine
 Our recursive synthesis model traverses your code's AST to generate a "Literate Programming" style description. It explains *intent*, not just syntax, by folding nested loops and conditionals into cohesive, indented paragraphs.
+<img width="628" height="313" alt="image" src="https://github.com/user-attachments/assets/1889174e-c12e-4c5a-ad1a-a2d270a840a8" />
 
 ### 📊 Macro & Micro Architecture
 *   **Macro View**: Automatically generates a high-level call graph of your entire file.
