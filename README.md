@@ -147,7 +147,7 @@ def fibonacci(n):
     if n <= 1:
         return n
     return fibonacci(n-1) + fibonacci(n-2)
-
+```
 # Example Call:
 print(fibonacci(5))
 ```
@@ -175,7 +175,7 @@ def merge(left, right):
     result.extend(left[i:])
     result.extend(right[j:])
     return result
-
+```
 # Example Call:
 print(merge_sort([38, 27, 43, 3, 9, 82, 10]))
 ```
@@ -190,7 +190,7 @@ quicksort <- function(x) {
   right <- rest[rest >= pivot]
   return(c(quicksort(left), pivot, quicksort(right)))
 }
-
+```
 # Example Call:
 print(quicksort(c(10, 5, 2, 3, 7, 6, 8, 9, 1, 4)))
 ```
@@ -212,7 +212,7 @@ TreeNode* insertIntoBST(TreeNode* root, int val) {
     }
     return root;
 }
-
+```
 // Example Usage:
 /*
 TreeNode* root = nullptr;
