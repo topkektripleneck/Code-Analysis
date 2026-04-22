@@ -227,6 +227,19 @@ TreeNode* insertIntoBST(TreeNode* root, int val) {
     return root;
 }
 ```
+### 📂 Input & Data Loading (CSV)
+
+The analyzer supports dynamic input through the **Arguments** field and bulk data loading via **CSV**.
+
+#### Using the Arguments Box
+Instead of hardcoding a call like `fibonacci(5)` at the bottom of your script, you can simply define the function and type `5` in the **Arguments** box. The analyzer automatically wraps your code with the appropriate call before tracing.
+
+#### Loading from CSV
+For algorithms that process large arrays (like Merge Sort), you can use the **Load CSV Args** button:
+1.  Prepare a `.csv` file with your data (e.g., `10, 20, 30, 40`).
+2.  Click **Load CSV Args** and select your file.
+3.  The analyzer will parse the CSV into a native array/vector and inject it into the Arguments field.
+4.  **Pro Tip**: You can slice specific rows or columns from a large CSV using the built-in selector modal that appears after selection.
 
 ---
 ## 🗺️ Roadmap (Future Updates)
