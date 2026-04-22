@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.ruff_cache/
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# App specific
+temp_*.py
+temp_*.R
+temp_out_*.json
+temp_wrapper_*.py
+analysis.json
+analysis_report.md
+trace_export.csv
+
+# Logs
+*.txt
+*.log
