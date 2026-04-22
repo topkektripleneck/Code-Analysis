@@ -131,25 +131,63 @@ def fibonacci(n):
     if n <= 1:
         return n
     return fibonacci(n-1) + fibonacci(n-2)
+
+**Python (Merge Sort - Divide & Conquer)**
+```python
+def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+```
 ```
 
-**R (Vectorized Operations)**
+**R (Recursive Quicksort)**
 ```r
-data <- c(1, 2, 3, 4, 5)
-result <- sapply(data, function(x) x * 2)
-```
-
-**C++ (Memory Management)**
-```cpp
-void manageMemory() {
-    int* arr = new int[10];
-    // ... logic ...
-    delete[] arr;
+quicksort <- function(x) {
+  if (length(x) <= 1) return(x)
+  pivot <- x[1]
+  rest <- x[-1]
+  left <- rest[rest < pivot]
+  right <- rest[rest >= pivot]
+  return(c(quicksort(left), pivot, quicksort(right)))
 }
 ```
 
----
+**C++ (BST Insertion - Pointer Manipulation)**
+```cpp
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
 
+TreeNode* insertIntoBST(TreeNode* root, int val) {
+    if (root == nullptr) return new TreeNode(val);
+    if (val < root->val) {
+        root->left = insertIntoBST(root->left, val);
+    } else {
+        root->right = insertIntoBST(root->right, val);
+    }
+    return root;
+}
+```
 ## 🗺️ Roadmap (Future Updates)
 
 - [ ] **Expanded Narratives**: Full hierarchical English synthesis for C++ and R (matching the current Python depth).
