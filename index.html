@@ -52,6 +52,66 @@
       --placeholder: #4b5263;
     }
 
+    [data-theme="tokyo-night"] {
+      --bg: #1a1b26;
+      --panel-bg: #16161e;
+      --text: #a9b1d6;
+      --subtext: #787c99;
+      --accent: #7aa2f7;
+      --accent-text: #1a1b26;
+      --border: #3b3d57;
+      --surface: #24283b;
+      --placeholder: #444b6a;
+    }
+
+    [data-theme="dracula"] {
+      --bg: #282a36;
+      --panel-bg: #1e1f29;
+      --text: #f8f8f2;
+      --subtext: #6272a4;
+      --accent: #bd93f9;
+      --accent-text: #282a36;
+      --border: #44475a;
+      --surface: #343746;
+      --placeholder: #44475a;
+    }
+
+    [data-theme="cyberpunk"] {
+      --bg: #000000;
+      --panel-bg: #101010;
+      --text: #ffffff;
+      --subtext: #797979;
+      --accent: #fcee0a;
+      --accent-text: #000000;
+      --border: #333333;
+      --surface: #151515;
+      --placeholder: #ff00ff;
+    }
+
+    [data-theme="solarized-dark"] {
+      --bg: #002b36;
+      --panel-bg: #073642;
+      --text: #839496;
+      --subtext: #586e75;
+      --accent: #268bd2;
+      --accent-text: #002b36;
+      --border: #073642;
+      --surface: #073642;
+      --placeholder: #657b83;
+    }
+
+    [data-theme="gruvbox"] {
+      --bg: #282828;
+      --panel-bg: #1d2021;
+      --text: #ebdbb2;
+      --subtext: #a89984;
+      --accent: #fabd2f;
+      --accent-text: #282828;
+      --border: #3c3836;
+      --surface: #32302f;
+      --placeholder: #665c54;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -430,6 +490,11 @@
       <option value="nord">Nord Arctic</option>
       <option value="rose-pine">Rose Pine</option>
       <option value="one-dark">One Dark</option>
+      <option value="tokyo-night">Tokyo Night</option>
+      <option value="dracula">Dracula</option>
+      <option value="cyberpunk">Cyberpunk 2077</option>
+      <option value="solarized-dark">Solarized Dark</option>
+      <option value="gruvbox">Gruvbox Dark</option>
     </select>
   </div>
 
@@ -533,7 +598,8 @@
     function getCmTheme(appTheme) {
       if (appTheme === 'nord') return 'nord';
       if (appTheme === 'one-dark') return 'material';
-      if (appTheme === 'rose-pine') return 'dracula';
+      if (appTheme === 'rose-pine' || appTheme === 'dracula') return 'dracula';
+      if (appTheme === 'tokyo-night' || appTheme === 'solarized-dark') return 'material';
       return 'base16-dark';
     }
 
