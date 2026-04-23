@@ -69,6 +69,12 @@ function analyzeCode(code) {
         essayParagraphs: essayParagraphs,
         fingerprint: fingerprint
       })
+
+      // Bug 4 fix: do NOT recurse into children of a matched node.
+      // This prevents inner loops/classes from being registered as separate
+      // top-level components (e.g. a for-loop inside a function, or a method
+      // inside a class). Each component is a self-contained unit.
+      return
     }
 
     for (let i = 0; i < node.childCount; i++) {
@@ -84,15 +90,32 @@ function analyzeCode(code) {
   const functions = points.filter(p => p.kind === 'Function')
   let hasEdges = false
 
+  // Bug 3 fix: use definition-only regex per language so we don't
+  // match call-site identifiers like fibonacci(...) as component names.
+  const langName = plugin.name || 'unknown'
+  function extractFuncName(source) {
+    if (langName === 'python') {
+      const m = source.match(/^def\s+([a-zA-Z_][a-zA-Z_0-9]*)/m)
+      return m ? m[1] : null
+    }
+    if (langName === 'r') {
+      const m = source.match(/^([a-zA-Z_][a-zA-Z_0-9]*)\s*<-\s*function/m)
+      return m ? m[1] : null
+    }
+    if (langName === 'cpp') {
+      const m = source.match(/([a-zA-Z_][a-zA-Z_0-9]*)\s*\([^)]*\)\s*\{/)
+      return m ? m[1] : null
+    }
+    return null
+  }
+
   functions.forEach(f => {
-    const fnNameMatch = f.source.match(/def\s+([a-zA-Z_0-9]+)|([a-zA-Z_0-9]+)\s*\(/)
-    const fnName = fnNameMatch ? (fnNameMatch[1] || fnNameMatch[2]) : null
+    const fnName = extractFuncName(f.source)
     
     if (fnName) {
       macroGraph += `    ${fnName}["${fnName}()"]\n`
       functions.forEach(target => {
-        const targetNameMatch = target.source.match(/def\s+([a-zA-Z_0-9]+)|([a-zA-Z_0-9]+)\s*\(/)
-        const targetName = targetNameMatch ? (targetNameMatch[1] || targetNameMatch[2]) : null
+        const targetName = extractFuncName(target.source)
         
         if (targetName && fnName !== targetName) {
           const callRegex = new RegExp(`\\b${targetName}\\s*\\(`, 'g')

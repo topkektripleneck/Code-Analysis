@@ -306,6 +306,14 @@
     .playback-locals { display: flex; flex-wrap: wrap; gap: 8px; }
     .delta-badge { display: inline-block; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
 
+    /* Top-Level Tabs CSS */
+    .top-tab-header { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 16px; padding: 0 16px; margin-top: 16px; }
+    .top-tab-btn { background: transparent; color: var(--subtext); border: none; padding: 12px 20px; cursor: pointer; font-size: 14px; font-weight: 600; border-bottom: 2px solid transparent; margin-right: 8px; }
+    .top-tab-btn:hover { color: var(--text); }
+    .top-tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+    .top-tab-content { display: none; padding: 0 16px; }
+    .top-tab-content.active { display: block; }
+
     /* Tab UI CSS */
     .tab-header { display: flex; border-bottom: 1px solid #313244; margin-bottom: 16px; margin-top: 12px; gap: 16px; }
     .tab-btn { background: transparent; color: #a6adc8; border: none; padding: 8px 0; cursor: pointer; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; }
@@ -642,7 +650,15 @@
     })
 
     function renderPoints(container, result, lang) {
-      let html = '';
+      let html = `
+        <div class="top-tab-header">
+          <button class="top-tab-btn active" id="top-tab-btn-master" onclick="switchTopTab('master')">Master View</button>
+          <button class="top-tab-btn" id="top-tab-btn-components" onclick="switchTopTab('components')">Component View</button>
+        </div>
+
+        <div class="top-tab-content active" id="top-tab-content-master">
+      `;
+
       if (result.macroGraph) {
         html += `
           <div class="result-card" style="margin-bottom:24px; background:var(--surface); border-radius:8px; padding:16px; border-left: 3px solid var(--accent);">
@@ -653,6 +669,23 @@
           </div>
         `;
       }
+
+      // Add Master Tracer UI
+      html += `
+          <div class="result-card" style="margin-bottom:24px; background:var(--surface); border-radius:8px; padding:16px; border-left: 3px solid var(--accent);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <span style="font-size:12px; color:var(--accent); font-weight:bold;">Global Trace Execution</span>
+              <button class="trace-btn" style="margin-left:0;" onclick="runGlobalTrace()">Run Global Trace</button>
+            </div>
+            <div class="split-view" style="margin-top:0;">
+              <div class="trace-section" id="trace-container-global" style="padding:12px; display:none;"></div>
+              <div class="tracker-section" id="tracker-container-global"></div>
+            </div>
+          </div>
+        </div> <!-- End Master View -->
+
+        <div class="top-tab-content" id="top-tab-content-components">
+      `;
 
       html += result.points.map((p, index) => {
         let traceButtonHtml = "";
@@ -742,6 +775,8 @@
         `;
       }).join('');
 
+      html += `</div>`; // Close top-tab-content-components
+
       container.innerHTML = html;
 
       setTimeout(async () => {
@@ -782,6 +817,82 @@
     let currentActiveTraceData = null;
     let currentVariableHistory = null;
     window.playbackInstances = {};
+
+    window.switchTopTab = (tabId) => {
+       document.querySelectorAll('.top-tab-btn').forEach(el => el.classList.remove('active'));
+       document.querySelectorAll('.top-tab-content').forEach(el => el.classList.remove('active'));
+       
+       const btn = document.getElementById(`top-tab-btn-${tabId}`);
+       const content = document.getElementById(`top-tab-content-${tabId}`);
+       if(btn) btn.classList.add('active');
+       if(content) content.classList.add('active');
+    };
+
+    window.runGlobalTrace = async function () {
+      const code = editor.getValue();
+      const index = 'global';
+      const traceContainer = document.getElementById(`trace-container-${index}`);
+
+      traceContainer.style.display = 'block';
+      traceContainer.innerHTML = '<p style="color:#89b4fa; padding:12px 0; font-size:13px;">Executing global trace...</p>';
+      
+      document.getElementById(`tracker-container-${index}`).style.display = 'none';
+
+      try {
+        const traceData = await ipcRenderer.invoke('trace', { code: code, offset: 0 });
+        currentActiveTraceData = traceData;
+
+        if (!traceData || traceData.length === 0) {
+          traceContainer.innerHTML = '<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Trace returned no data.</p>';
+          return;
+        }
+
+        const errorStep = traceData.find(s => s.line === "ERROR");
+        if (errorStep) {
+             const errorHtml = `
+               <div style="margin-top:12px; padding:12px; background:rgba(243, 139, 168, 0.1); border:1px solid #f38ba8; border-radius:6px; color:#f38ba8; font-family:'Cascadia Code', monospace; font-size:12px;">
+                 <strong>Runtime Error Encountered:</strong>
+                 <pre style="margin-top:8px; white-space:pre-wrap;">${JSON.stringify(errorStep.variables, null, 2)}</pre>
+               </div>
+             `;
+             traceContainer.insertAdjacentHTML('beforeend', errorHtml);
+        }
+
+        const varHistory = {};
+        traceData.forEach((step, sIdx) => {
+          if (!step.variables || typeof step.variables !== 'object') return;
+          for (const [k, v] of Object.entries(step.variables)) {
+            if (!varHistory[k]) varHistory[k] = [];
+            const prev = varHistory[k].length > 0 ? varHistory[k][varHistory[k].length - 1].value : undefined;
+            if (prev !== v) {
+              varHistory[k].push({ stepIndex: sIdx, line: step.line, value: v });
+            }
+          }
+        });
+        currentVariableHistory = varHistory;
+
+        window.playbackInstances[index] = {
+            currentStep: 0,
+            traceData: traceData
+        };
+
+        const controlsHtml = `
+           <div class="playback-controls">
+              <button class="btn btn-secondary" style="margin:0;" onclick="stepPlayback('${index}', -1)">&larr; Prev</button>
+              <button class="btn" style="margin:0;" onclick="stepPlayback('${index}', 1)">Next &rarr;</button>
+              <input type="range" id="playback-slider-${index}" min="0" max="${traceData.length - 1}" value="0" oninput="seekPlayback('${index}', this.value)" />
+              <span style="font-size:12px; font-variant-numeric:tabular-nums; color:#a6adc8;" id="playback-counter-${index}">Step 1/${traceData.length}</span>
+           </div>
+           <div class="playback-state" id="playback-state-${index}">
+           </div>
+        `;
+        traceContainer.innerHTML = controlsHtml;
+        seekPlayback(index, 0);
+
+      } catch (err) {
+        traceContainer.innerHTML = `<p style="color:#f38ba8; padding:12px 0; font-size:13px;">Trace Error: ${err.message}</p>`;
+      }
+    };
 
     window.switchTab = (tabName, index) => {
        document.querySelectorAll(`[id^="tab-btn-"][id$="-${index}"]`).forEach(el => el.classList.remove('active'));
@@ -965,7 +1076,11 @@
 
     window.runTrace = async function (funcName, index, lineOffset) {
       switchTab('trace', index);
-      const code = document.getElementById('code-input').value;
+      // BUGFIX: Must use editor.getValue() here, NOT document.getElementById('code-input').value.
+      // CodeMirror replaces the <textarea> with its own shadow DOM — the textarea's .value
+      // is always empty, so reading it would send only the function call with no definitions,
+      // causing a NameError in the tracer for any function (including recursive ones).
+      const code = editor.getValue();
       const traceContainer = document.getElementById(`trace-container-${index}`);
       const inputElement = document.getElementById(`trace-args-${index}`);
 
