@@ -28,6 +28,7 @@ Our recursive synthesis model traverses your code's AST to generate a "Literate 
 
 ### ⏱️ Interactive Trace Playback
 Step through code line-by-line. The application captures environment snapshots and variable deltas, allowing you to "scrub" through execution history using a timeline slider.
+<img width="631" height="479" alt="image" src="https://github.com/user-attachments/assets/5d935435-7de6-4fc4-bc6a-4f271eae0b3f" />
 
 ### 🎨 Premium Aesthetics
 Built with a sleek, glassmorphic UI supporting multiple designer themes:
