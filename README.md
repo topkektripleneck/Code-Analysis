@@ -123,38 +123,6 @@ The **Macro View** will automatically draw a dependency link between your Python
 ### 3. DSA Pattern Detection
 The analyzer detects common patterns like `Linked List Node` structures or `Sliding Window` logic. It tags these in the fingerprint metadata, making it easy to identify the underlying data structures at a glance.
 
-## 💡 Examples & Use Cases
-
-### 1. Algorithm Visualization (Binary Search)
-Paste a standard Binary Search implementation in Python. The **Micro View** will generate a flowchart showing the `while` loop and boundary updates, while the **Literate Narrative** explains the "Divide and Conquer" logic in plain English. Use the **Trace Playback** to watch `low`, `high`, and `mid` change as you step through.
-
-### 2. Cross-Language Architecture
-If you have a Python script that orchestrates an R analysis:
-```python
-import subprocess
-subprocess.run(["Rscript", "analysis.R"])
-```
-The **Macro View** will automatically draw a dependency link between your Python environment and the R script, visually mapping your multi-language pipeline.
-
-### 3. DSA Pattern Detection
-The analyzer detects common patterns like `Linked List Node` structures or `Sliding Window` logic. It tags these in the fingerprint metadata, making it easy to identify the underlying data structures at a glance.
-
-## 💡 Examples & Use Cases
-
-### 1. Algorithm Visualization (Binary Search)
-Paste a standard Binary Search implementation in Python. The **Micro View** will generate a flowchart showing the `while` loop and boundary updates, while the **Literate Narrative** explains the "Divide and Conquer" logic in plain English. Use the **Trace Playback** to watch `low`, `high`, and `mid` change as you step through.
-
-### 2. Cross-Language Architecture
-If you have a Python script that orchestrates an R analysis:
-```python
-import subprocess
-subprocess.run(["Rscript", "analysis.R"])
-```
-The **Macro View** will automatically draw a dependency link between your Python environment and the R script, visually mapping your multi-language pipeline.
-
-### 3. DSA Pattern Detection
-The analyzer detects common patterns like `Linked List Node` structures or `Sliding Window` logic. It tags these in the fingerprint metadata, making it easy to identify the underlying data structures at a glance.
-
 ### 🧪 Test Snippets
 Copy and paste the implementation into the editor, and use the provided inputs in the **Arguments** box or as a direct call.
 
@@ -228,6 +196,9 @@ TreeNode* insertIntoBST(TreeNode* root, int val) {
     return root;
 }
 ```
+
+---
+
 ### 📂 Input & Data Loading (CSV)
 
 The analyzer supports dynamic input through the **Arguments** field and bulk data loading via **CSV**.
@@ -243,6 +214,16 @@ For algorithms that process large arrays (like Merge Sort), you can use the **Lo
 4.  **Pro Tip**: You can slice specific rows or columns from a large CSV using the built-in selector modal that appears after selection.
 
 ---
+### 🔍 Master View & Structural Flowcharts
+
+The latest release introduces a top-level tabbed interface to separate **Component Views** from the **Master View**.
+
+#### Master View
+*   **Module-Level Macro View**: Visualizes the call graph and architectural dependencies of the entire file.
+*   **Global Trace Execution**: Don't want to use the Arguments box? If your code is self-executing (e.g. you already have `print(fibonacci(5))` at the bottom), just click **Run Global Trace**. It will capture the entire file's execution path from top to bottom!
+
+#### Structural Data Flowcharts
+When defining custom data structures like `class TreeNode:` (Python) or `struct TreeNode` (C++), the engine will automatically parse your field definitions/assignments and generate a **Structural Diagram** instead of a logic flowchart. It intelligently maps pointers (`left`, `right`, `next`) versus primitive data, giving you a beautiful visual representation of your models.
 ## 🗺️ Roadmap (Future Updates)
 
 - [ ] **Expanded Narratives**: Full hierarchical English synthesis for C++ and R (matching the current Python depth).
@@ -258,6 +239,5 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 🤝 Contributing
 Contributions are welcome! Feel free to open issues or submit pull requests to expand the narrative templates for C++ and R.
-
 ---
-*Created with ❤️ by the Code Analyzer Team*
+*Created with subpar  vibecoding*
